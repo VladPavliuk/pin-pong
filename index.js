@@ -1,6 +1,11 @@
-let canvasElement = document.getElementById('canvas');
-let canvasContext = canvasElement.getContext('2d');
+let canvasElement = document.createElement('canvas');
+canvasElement.width = 800;
+canvasElement.height = 400;
 
+let wrapper = document.getElementById('wrapper');
+wrapper.appendChild(canvasElement);
+
+let canvasContext = canvasElement.getContext('2d');
 // canvasElement.width = 800 + 'px';
 // canvasElement.height = 800;
 
@@ -11,7 +16,6 @@ let onGameFinishEvent = (gameData, callback) => {
 };
 
 let getGameScore = () => {
-    console.log(user.score);
     return user.score;
 };
 
