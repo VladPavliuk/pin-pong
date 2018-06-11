@@ -4,15 +4,14 @@ let canvasContext = canvasElement.getContext('2d');
 // canvasElement.width = 800 + 'px';
 // canvasElement.height = 800;
 
-
 let ball = {
         x: canvasElement.width / 2,
         y: canvasElement.height / 2,
         width: 25,
         height: 25,
         speed: {
-            x: -10,
-            y: 3
+            x: 10,
+            y: 0
         },
         color: '#fff'
     },
@@ -24,11 +23,14 @@ let ball = {
         color: '#fff'
     },
     cpu = {
-        x: 0,
+        x: canvasElement.width - 15,
         y: canvasElement.height / 2,
-        width: 20,
-        height: 50,
-        color: '#fff'
+        width: 15,
+        height: 100,
+        color: '#fff',
+        speed: {
+            y: 3
+        }
     };
 
 let clearCanvas = () => {
@@ -38,6 +40,10 @@ let clearCanvas = () => {
 
 let userLoseEvent = () => {
     console.log('lose');
+};
+
+let userWinEvent = () => {
+
 };
 
 let moveUser = (direction) => {
@@ -55,7 +61,7 @@ let drawUser = () => {
     canvasContext.fillRect(user.x, user.y, user.width, user.height);
 };
 
-let drawBall = () => {
+let moveBall = () => {
     ball.x += ball.speed.x;
     ball.y += ball.speed.y;
 
@@ -74,8 +80,36 @@ let drawBall = () => {
         ball.speed.y = -1 * ball.speed.y + Math.random() * (5 - 1) + 1;
     }
 
+    if (ball.x + ball.speed.x <= canvasElement.width && ball.x + ball.speed.x >= cpu.x - cpu.width
+        && ball.y > user.y - ball.height && ball.y < user.y + user.height) {
+        ball.x = cpu.x - cpu.width - 1;
+        ball.speed.x = -ball.speed.x;
+        ball.speed.y = -1 * ball.speed.y + Math.random() * (5 - 1) + 1;
+    }
+
+    if (ball.x < 0) {
+        userLoseEvent();
+    } else if(ball.x > canvasElement.width + ball.x) {
+        userWinEvent();
+    }
+};
+
+let drawBall = () => {
     canvasContext.fillStyle = ball.color;
     canvasContext.fillRect(ball.x, ball.y, ball.width, ball.height);
+};
+
+let moveCpu = () => {
+        if (ball.y > cpu.y + cpu.height / 2 && cpu.y + cpu.height < canvasElement.height) {
+            cpu.y += cpu.speed.y;
+        } else if (ball.y < cpu.y) {
+            cpu.y -= cpu.speed.y;
+        }
+};
+
+let drawCpu = () => {
+    canvasContext.fillStyle = cpu.color;
+    canvasContext.fillRect(cpu.x, cpu.y, cpu.width, cpu.height);
 };
 
 document.onkeydown = (event) => {
@@ -91,10 +125,15 @@ document.onkeydown = (event) => {
 let gameIteration = () => {
     clearCanvas();
 
+    moveBall();
     drawBall();
+
+    moveCpu();
+    drawCpu();
+
     drawUser();
 };
 
 clearCanvas();
 
-setInterval(gameIteration, 50);
+setInterval(gameIteration, 200);
