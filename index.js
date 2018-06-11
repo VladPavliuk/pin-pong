@@ -4,6 +4,17 @@ let canvasContext = canvasElement.getContext('2d');
 // canvasElement.width = 800 + 'px';
 // canvasElement.height = 800;
 
+let onGameFinishEvent = (gameData, callback) => {
+    callback({
+        score: getGameScore()
+    });
+};
+
+let getGameScore = () => {
+    console.log(user.score);
+    return user.score;
+};
+
 let isGameOver = false;
 let ball = {
         x: 0,
@@ -51,14 +62,13 @@ let clearCanvas = () => {
     canvasContext.fillRect(0, 0, canvasElement.width, canvasElement.height);
 };
 
-let drawScore = (score = 0) => {
-    canvasContext.font = "30px Arial";
+let drawScore = (score, font = 30) => {
+    canvasContext.font = font + "px Arial";
     canvasContext.fillStyle = '#fff';
     canvasContext.fillText("Your score: " + score, canvasElement.width / 2 - 90, 50);
 };
 
 let userLoseEvent = () => {
-    console.log('lose');
     isGameOver = true;
 };
 
@@ -153,7 +163,7 @@ let gameIteration = () => {
         drawUser();
     } else {
         clearCanvas();
-        drawScore(user.score);
+        drawScore(user.score, 60);
     }
 };
 
