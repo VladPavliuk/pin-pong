@@ -4,9 +4,10 @@ let canvasContext = canvasElement.getContext('2d');
 // canvasElement.width = 800 + 'px';
 // canvasElement.height = 800;
 
+let isGameOver = false;
 let ball = {
-        x: canvasElement.width / 2,
-        y: canvasElement.height / 2,
+        x: 0,
+        y: 0,
         width: 25,
         height: 25,
         speed: {
@@ -17,14 +18,15 @@ let ball = {
     },
     user = {
         x: 0,
-        y: canvasElement.height / 2,
+        y: 0,
         width: 15,
         height: 100,
-        color: '#fff'
+        color: '#fff',
+        score: 0,
     },
     cpu = {
-        x: canvasElement.width - 15,
-        y: canvasElement.height / 2,
+        x: 0,
+        y: 0,
         width: 15,
         height: 100,
         color: '#fff',
@@ -33,17 +35,37 @@ let ball = {
         }
     };
 
+let initMap = () => {
+    ball.x = canvasElement.width / 2;
+    ball.y = canvasElement.height / 2;
+
+    user.x = 0;
+    user.y = canvasElement.height / 2;
+
+    cpu.x = canvasElement.width - cpu.width;
+    cpu.y = canvasElement.height / 2;
+};
+
 let clearCanvas = () => {
     canvasContext.fillStyle = '#000';
     canvasContext.fillRect(0, 0, canvasElement.width, canvasElement.height);
 };
 
+let drawScore = (score = 0) => {
+    canvasContext.font = "30px Arial";
+    canvasContext.fillStyle = '#fff';
+    canvasContext.fillText("Your score: " + score, canvasElement.width / 2 - 90, 50);
+};
+
 let userLoseEvent = () => {
     console.log('lose');
+    isGameOver = true;
 };
 
 let userWinEvent = () => {
-
+    user.score++;
+    drawScore(user.score);
+    initMap();
 };
 
 let moveUser = (direction) => {
@@ -69,10 +91,6 @@ let moveBall = () => {
         ball.speed.y = -ball.speed.y;
     }
 
-    if (ball.x + ball.width >= canvasElement.width) {
-        ball.speed.x = -ball.speed.x;
-    }
-
     if (ball.x - ball.speed.x >= 0 && ball.x - ball.speed.x <= user.x + user.width
         && ball.y > user.y - ball.height && ball.y < user.y + user.height) {
         ball.x = user.x + user.width + 1;
@@ -89,7 +107,7 @@ let moveBall = () => {
 
     if (ball.x < 0) {
         userLoseEvent();
-    } else if(ball.x > canvasElement.width + ball.x) {
+    } else if (ball.x + ball.width> canvasElement.width) {
         userWinEvent();
     }
 };
@@ -100,11 +118,11 @@ let drawBall = () => {
 };
 
 let moveCpu = () => {
-        if (ball.y > cpu.y + cpu.height / 2 && cpu.y + cpu.height < canvasElement.height) {
-            cpu.y += cpu.speed.y;
-        } else if (ball.y < cpu.y) {
-            cpu.y -= cpu.speed.y;
-        }
+    if (ball.y > cpu.y + cpu.height / 2 && cpu.y + cpu.height < canvasElement.height) {
+        cpu.y += cpu.speed.y;
+    } else if (ball.y < cpu.y) {
+        cpu.y -= cpu.speed.y;
+    }
 };
 
 let drawCpu = () => {
@@ -123,17 +141,24 @@ document.onkeydown = (event) => {
 };
 
 let gameIteration = () => {
-    clearCanvas();
+    if(!isGameOver) {
+        clearCanvas();
+        drawScore(user.score);
+        moveBall();
+        drawBall();
 
-    moveBall();
-    drawBall();
+        moveCpu();
+        drawCpu();
 
-    moveCpu();
-    drawCpu();
-
-    drawUser();
+        drawUser();
+    } else {
+        clearCanvas();
+        drawScore(user.score);
+    }
 };
 
 clearCanvas();
+initMap();
 
-setInterval(gameIteration, 200);
+
+setInterval(gameIteration, 40);
