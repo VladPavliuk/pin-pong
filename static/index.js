@@ -1,5 +1,5 @@
 let server = {
-    url: 'https://agile-everglades-43373.herokuapp.com',
+    url: 'https://games-sockets-server.herokuapp.com',
     score: {
         send(score) {
             var socket = io.connect(server.url);
