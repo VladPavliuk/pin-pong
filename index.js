@@ -6,8 +6,6 @@ let wrapper = document.getElementById('wrapper');
 wrapper.appendChild(canvasElement);
 
 let canvasContext = canvasElement.getContext('2d');
-// canvasElement.width = 800 + 'px';
-// canvasElement.height = 800;
 
 let onGameFinishEvent = (gameData, callback) => {
     callback({
@@ -26,8 +24,8 @@ let ball = {
         width: 25,
         height: 25,
         speed: {
-            x: 10,
-            y: 0
+            x: 15,
+            y: 10
         },
         color: '#fff'
     },
@@ -46,13 +44,15 @@ let ball = {
         height: 100,
         color: '#fff',
         speed: {
-            y: 3
+            y: 10
         }
     };
 
 let initMap = () => {
     ball.x = canvasElement.width / 2;
-    ball.y = canvasElement.height / 2;
+    ball.y = canvasElement.height / 2 + 80;
+    ball.speed.x = Math.random() > .5 ? 10 : -10;
+    ball.speed.y = 0;
 
     user.x = 0;
     user.y = canvasElement.height / 2;
@@ -113,7 +113,7 @@ let moveBall = () => {
     }
 
     if (ball.x + ball.speed.x <= canvasElement.width && ball.x + ball.speed.x >= cpu.x - cpu.width
-        && ball.y > user.y - ball.height && ball.y < user.y + user.height) {
+        && ball.y > cpu.y - ball.height && ball.y < cpu.y + cpu.height) {
         ball.x = cpu.x - cpu.width - 1;
         ball.speed.x = -ball.speed.x;
         ball.speed.y = -1 * ball.speed.y + Math.random() * (5 - 1) + 1;
