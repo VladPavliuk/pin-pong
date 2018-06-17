@@ -7,16 +7,6 @@ wrapper.appendChild(canvasElement);
 
 let canvasContext = canvasElement.getContext('2d');
 
-let onGameFinishEvent = (gameData, callback) => {
-    callback({
-        score: getGameScore()
-    });
-};
-
-let getGameScore = () => {
-    return user.score;
-};
-
 let isGameOver = false;
 let ball = {
         x: 0,
@@ -173,6 +163,5 @@ let gameIteration = () => {
 
 clearCanvas();
 initMap();
-
 
 setInterval(gameIteration, 40);
