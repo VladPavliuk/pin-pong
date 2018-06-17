@@ -1,3 +1,13 @@
+let server = {
+    url: 'https://agile-everglades-43373.herokuapp.com',
+    score: {
+        send(score) {
+            var socket = io.connect(server.url);
+            socket.emit('send', {score});
+        }
+    }
+};
+
 let canvasElement = document.createElement('canvas');
 canvasElement.width = 800;
 canvasElement.height = 400;
@@ -148,10 +158,12 @@ let gameIteration = () => {
     } else {
         clearCanvas();
         drawScore(user.score, 60);
+        server.score.send(user.score);
+        clearInterval(gameInterval);
     }
 };
 
 clearCanvas();
 initMap();
 
-setInterval(gameIteration, 40);
+let gameInterval = setInterval(gameIteration, 40);
