@@ -1,12 +1,30 @@
 let server = {
     url: 'https://games-sockets-server.herokuapp.com',
+    socket: undefined,
+    room: undefined,
+
+    _init: function() {
+        server.socket = io.connect(server.url);
+    },
+    _autorun: function() {
+        this._init();
+        this.subscribe();
+    },
+    subscribe: function() {
+        server.room = 69;
+        this.socket.emit('subscribe', server.room);
+    },
     score: {
         send(score) {
-            var socket = io.connect(server.url);
-            socket.emit('send', {score});
+            server.socket.emit('send', {
+                room: server.room,
+                score
+            });
         }
     }
 };
+
+server._autorun();
 
 let canvasElement = document.createElement('canvas');
 canvasElement.width = 800;
