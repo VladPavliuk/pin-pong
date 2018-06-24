@@ -14,11 +14,12 @@ let server = {
     _autorun: function() {
         if(this.getToken()) {
             this._init();
+            server.room = this.getToken();
             this.subscribe();
         }
     },
     subscribe: function() {
-        server.room = this.getToken();
+        console.log(server.room);
         this.socket.emit('subscribe', server.room);
     },
     score: {
