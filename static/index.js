@@ -19,7 +19,6 @@ let server = {
         }
     },
     subscribe: function() {
-        console.log(server.room);
         this.socket.emit('subscribe', server.room);
     },
     score: {
