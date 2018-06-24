@@ -3,15 +3,22 @@ let server = {
     socket: undefined,
     room: undefined,
 
+    getToken() {
+        let url = new URL(window.location.href);
+        return url.searchParams.get("token");
+    },
+
     _init: function() {
         server.socket = io.connect(server.url);
     },
     _autorun: function() {
-        this._init();
-        this.subscribe();
+        if(this.getToken()) {
+            this._init();
+            this.subscribe();
+        }
     },
     subscribe: function() {
-        server.room = 69;
+        server.room = this.getToken();
         this.socket.emit('subscribe', server.room);
     },
     score: {
