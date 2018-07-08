@@ -1,6 +1,6 @@
 let server = {
-    url: 'https://games-sockets-server.herokuapp.com',
-    socket: undefined,
+    url: 'https://localhost:44390',
+    connection: undefined,
     room: undefined,
 
     getToken() {
@@ -9,24 +9,29 @@ let server = {
     },
 
     _init: function() {
-        server.socket = io.connect(server.url);
+        server.connection = new signalR.HubConnectionBuilder()
+            .withUrl(server.url + "/chatHub")
+            .build();
     },
     _autorun: function() {
         if(this.getToken()) {
-            this._init();
             server.room = this.getToken();
+            this._init();
             this.subscribe();
         }
     },
     subscribe: function() {
-        this.socket.emit('subscribe', server.room);
+        server.connection
+            .start()
+            .then(() => server.connection.invoke("joinRoom", server.room))
+            .catch(err => console.error(err));
     },
     score: {
         send(score) {
-            server.socket.emit('send', {
+            server.connection.invoke("closeSession", {
                 room: server.room,
                 score
-            });
+            })
         }
     }
 };
